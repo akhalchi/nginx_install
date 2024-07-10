@@ -1,43 +1,29 @@
----
-# tasks file for roles/install_nginx_windows
-
-- name: Download Nginx to local machine
-  get_url:
-    url: "https://nginx.org/download/nginx-{{nginx_version}}.zip"
-    dest: "{{temp_files}}/nginx-{{nginx_version}}.zip"
-
-- name: Download Nginx to local machine
-  get_url:
-    url: "https://github.com/winsw/winsw/releases/download/v{{winsw_version}}/WinSW-x64.exe"
-    dest: "{{temp_files}}/WinSW-x64.exe"
-
-
 - name: Create temporary directory on remote host
   win_file:
     path: "{{nginx_temp}}"
     state: directory
 
 - name: Copy Nginx zip file to remote host
-  copy:
-    src: "{{temp_files}}/nginx-{{nginx_version}}.zip"
-    dest: "{{nginx_temp}}\nginx-{{nginx_version}}.zip"
-
-- name: Unzip Nginx on remote host
-  win_unzip:
-    src: "{{nginx_temp}}\nginx-{{nginx_version}}.zip"
-    dest: "{{nginx_temp}}"
-    creates: "{{nginx_temp}}\nginx-{{nginx_version}}"
-
-- name: Create Nginx directory on remote host
-  win_file:
-    path: "{{nginx_home}}"
-    state: directory
-
-- name: Copy Nginx files to installation directory
   win_copy:
-    src: "{{nginx_temp}}\nginx-{{nginx_version}}"
-    dest: "{{nginx_home}}"
-    recurse: yes
+    src: "{{temp_files}}/nginx-{{nginx_version}}.zip"
+    dest: "{{nginx_temp}}\\nginx-{{nginx_version}}.zip"
+
+- name: Unzip Nginx on remote host and rename files
+  win_unzip:
+    src: "{{ nginx_temp }}\\nginx-{{ nginx_version }}.zip"
+    dest: "{{ root_dir }}\\nginx"
+
+#- name: Create Nginx directory on remote host
+ # win_file:
+  #  path: "{{nginx_home}}"
+   # state: directory
+
+#- name: Copy Nginx files to installation directory
+ # win_copy:
+  #  src: "{{ nginx_temp }}\\nginx-{{ nginx_version }}\\{{ item }}"
+   # dest: "{{ nginx_home }}"
+    #recurse: yes
+    #remote_src: yes
 
 - name: Copy WinSW to remote host
   win_copy:

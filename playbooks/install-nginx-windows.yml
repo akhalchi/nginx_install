@@ -2,5 +2,5 @@
   hosts: nginx_windows
   tasks:
     - name: Run role
-      import_role:
+      include_role:
         name: install_nginx_windows

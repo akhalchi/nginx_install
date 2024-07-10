@@ -1,5 +1,9 @@
-- name: Install Nginx on Windows
-  import_tasks: setup-nginx.yml
+---
+- name: Download software
+  include_tasks: download-software.yml
 
-- name: Setup HTTPS on Nginx server
-  import_tasks: install-https.yml
+- name: Setup Nginx on Windows host
+  include_tasks: setup-nginx.yml
+
+#- name: Install HTTPS on host
+#  include_tasks: install-https.yml
