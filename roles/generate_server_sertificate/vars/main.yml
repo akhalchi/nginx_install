@@ -1,0 +1,14 @@
+# vars file for roles/generate_server_sertificate
+
+servers_keys_path: "{{ playbook_dir }}/../inventories/host_vars/{{ server_name }}"
+root_keys_path: "{{ playbook_dir }}/../inventories/group_vars/all"
+
+key_size: 2048
+key_type: RSA
+
+country: 'US'
+organization: 'MyOrg'
+state: 'MyState'
+email: 'admin@myorg.com'
+
+

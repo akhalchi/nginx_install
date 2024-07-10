@@ -1,0 +1,25 @@
+
+    - name: Create directory for SSL certificates
+      win_file:
+        path: "{{ssl_dir}}"
+        state: directory
+
+    - name: Copy SSL certificate to remote host
+      win_copy:
+        src: "{{servers_keys_path}}/server.crt"
+        dest: "{{ssl_dir}}\\server.crt"
+
+    - name: Copy SSL private key to remote host
+      win_copy:
+        src: "{{servers_keys_path}}/server.key"
+        dest: "{{ssl_dir}}\\server.key"
+
+    - name: Copy nginx configuration file with HTTPS setup
+      win_copy:
+        src: file/nginx.conf
+        dest: "{{nginx_home}}\\conf\\nginx.conf"
+
+    - name: Restart Nginx service
+      win_service:
+        name: "{{nginx_service}}"
+        state: restarted

@@ -1,0 +1,14 @@
+---
+# vars file for generate_ca_root_sert
+root_keys_path: "{{ playbook_dir }}/../inventories/group_vars/all"
+
+key_size: 2048
+key_type: RSA
+
+days: 1024
+
+
+country: 'US'
+organization: 'MyOrg'
+state: 'MyState'
+email: 'admin@myorg.com'

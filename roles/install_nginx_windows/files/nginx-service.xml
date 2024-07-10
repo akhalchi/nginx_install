@@ -1,0 +1,12 @@
+<service>
+  <id>nginx</id>
+  <name>Nginx</name>
+  <description>Nginx web server as a Windows service.</description>
+  <executable>C:\nginx\nginx.exe</executable>
+  <arguments>-p C:\nginx -c C:\nginx\conf\nginx.conf</arguments>
+  <logpath>C:\nginx\logs</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+</service>

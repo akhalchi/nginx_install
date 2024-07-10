@@ -1,0 +1,6 @@
+- name: Generate certificate for server
+  hosts: localhost
+  tasks:
+    - name: Run role
+      import_role:
+        name: generate_server_sertificate

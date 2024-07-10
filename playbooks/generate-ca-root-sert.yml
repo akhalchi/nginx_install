@@ -1,0 +1,6 @@
+- name: Generate CA root certificate
+  hosts: localhost
+  tasks:
+    - name: Run role
+      import_role:
+        name: generate_ca_root_sert

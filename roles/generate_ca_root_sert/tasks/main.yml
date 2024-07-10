@@ -1,0 +1,35 @@
+---
+# tasks file for generate_ca_root_sert
+
+- name: Generate RSA private key
+  community.crypto.openssl_privatekey:
+    path: "{{root_keys_path}}/rootCA.key"
+    size: "{{key_size}}"
+    type: "{{key_type}}"
+    return_content: true
+  register: new_private_key
+
+- name: Create a root certificate request
+  community.crypto.openssl_csr:
+    path: "{{root_keys_path}}/rootCA.csr"
+    privatekey_path: "{{root_keys_path}}/rootCA.key"
+    common_name: 'Root CA'
+    country_name: '{{country}}'
+    organization_name: '{{organization}}'
+    state_or_province_name: '{{state}}'
+    email_address: '{{email}}'
+
+- name: Generate self-signed root certificate
+  community.crypto.x509_certificate:
+    path: "{{root_keys_path}}/rootCA.pem"
+    privatekey_content: "{{ new_private_key.privatekey}}"
+    csr_path: "{{root_keys_path}}/rootCA.csr"
+    provider: selfsigned
+    selfsigned_notAfter: "+{{ days }}d"
+
+- name: Write the private key to file
+  ansible.builtin.copy:
+    dest: "{{root_keys_path}}/ca_nginx_cert.yml"
+    content: |
+      rootCA_key: |-
+          {{ new_private_key.privatekey | indent(4) }}
