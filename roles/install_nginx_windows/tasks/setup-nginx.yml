@@ -32,7 +32,7 @@
 
 - name: Copy nginx-service.xml to remote host
   win_copy:
-    src: files/nginx-service.xml
+    src: nginx-service.xml
     dest: "{{nginx_home}}\\nginx-service.xml"
 
 - name: Install Nginx service

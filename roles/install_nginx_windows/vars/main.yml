@@ -1,5 +1,6 @@
 temp_files: "{{ playbook_dir }}/../temp"
 servers_keys_path: "{{ playbook_dir }}/../inventories/host_vars/{{ ansible_host }}"
+server_name: "{{ ansible_host }}"
 
 nginx_version: 1.27.0
 winsw_version: 2.12.0

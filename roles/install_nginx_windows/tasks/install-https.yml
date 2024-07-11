@@ -15,8 +15,8 @@
         dest: "{{ssl_dir}}\\server.key"
 
     - name: Copy nginx configuration file with HTTPS setup
-      win_copy:
-        src: file/nginx.conf
+      win_template:
+        src: nginx.conf
         dest: "{{nginx_home}}\\conf\\nginx.conf"
 
     - name: Restart Nginx service

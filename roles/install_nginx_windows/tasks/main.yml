@@ -5,5 +5,5 @@
 - name: Setup Nginx on Windows host
   include_tasks: setup-nginx.yml
 
-#- name: Install HTTPS on host
-#  include_tasks: install-https.yml
+- name: Install HTTPS on host
+  include_tasks: install-https.yml
