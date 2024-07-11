@@ -11,19 +11,19 @@
 - name: Unzip Nginx on remote host and rename files
   win_unzip:
     src: "{{ nginx_temp }}\\nginx-{{ nginx_version }}.zip"
-    dest: "{{ root_dir }}\\nginx"
+    dest: "{{ nginx_temp }}\\"
 
-#- name: Create Nginx directory on remote host
- # win_file:
-  #  path: "{{nginx_home}}"
-   # state: directory
+- name: Copy Nginx files to installation directory
+  win_copy:
+    src: "{{ nginx_temp }}\\nginx-{{ nginx_version }}\\"
+    dest: "{{ nginx_home }}"
+    recurse: yes
+    remote_src: yes
 
-#- name: Copy Nginx files to installation directory
- # win_copy:
-  #  src: "{{ nginx_temp }}\\nginx-{{ nginx_version }}\\{{ item }}"
-   # dest: "{{ nginx_home }}"
-    #recurse: yes
-    #remote_src: yes
+- name: Copy Nginx files to installation directory
+  win_file:
+    path: "{{ nginx_temp }}"
+    state: absent
 
 - name: Copy WinSW to remote host
   win_copy:
