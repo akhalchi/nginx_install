@@ -19,27 +19,28 @@ Run the following PowerShell script on your Windows host to configure WinRM for 
 . .\ConfigureRemotingForAnsible.ps1
 ```
 
+## Install
+
 ## Generate Root CA Keys
 
-### Generate the root CA keys by running the following playbook:
-
+Generate the root CA keys by running the following playbook:
 ```sh
 ansible-playbook playbooks/generate-ca-root-cert.yml
 ```
 
-# Encrypt Private Key Using Ansible Vault
-### Encrypt the private key for security purposes using Ansible Vault:
+## Encrypt Private Key Using Ansible Vault
+Encrypt the private key for security purposes using Ansible Vault:
 ```sh
 ansible-vault encrypt ca_nginx_cert.yml
 ```
 
 # Generate Keys for Server
-## Generate the necessary keys for your server by running the playbook and specifying the server name and the number of days the certificate should be valid:
+Generate the necessary keys for your server by running the playbook and specifying the server name and the number of days the certificate should be valid:
 ```sh
 ansible-playbook playbooks/generate-server-cert.yml -e "server_name=test.ru days=3365"
 ```
 # Install Nginx
-## Finally, install and configure Nginx on your Windows host using the following playbook:
+Finally, install and configure Nginx on your Windows host using the following playbook:
 ```sh
 ansible-playbook playbooks/install-nginx-windows.yml -i inventories/inventory.yml
 ```
