@@ -2,4 +2,5 @@
 *.key
 *.csr
 
-inventory.yml
+/inventory.yml
+/temp/

@@ -1,0 +1,11 @@
+    - name: Download Nginx zip
+      delegate_to: localhost
+      get_url:
+        url: "https://nginx.org/download/nginx-{{nginx_version}}.zip"
+        dest: "{{temp_files}}/nginx-{{nginx_version}}.zip"
+
+    - name: Download WinSW
+      delegate_to: localhost
+      get_url:
+        url: "https://github.com/winsw/winsw/releases/download/v{{winsw_version}}/WinSW-x64.exe"
+        dest: "{{temp_files}}/WinSW-x64.exe"
