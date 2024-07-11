@@ -28,7 +28,7 @@ Generate the root CA keys by running the following playbook:
 ansible-playbook playbooks/generate-ca-root-cert.yml
 ```
 
-## Encrypt Private Key Using Ansible Vault
+## Encrypt Private Key
 Encrypt the private key for security purposes using Ansible Vault:
 ```sh
 ansible-vault encrypt ca_nginx_cert.yml
