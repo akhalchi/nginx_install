@@ -1,0 +1,18 @@
+---
+- name: Run all tasks
+  hosts: nginx_windows
+  tasks:
+    - name: Generate CA root certificate
+      include_tasks: generate-ca-root-cert.yml
+
+    - name: Generate Server certificate
+      include_tasks: generate-server-cert.yml
+
+    - name: Install Nginx
+      include_tasks: install-nginx-windows.yml
+
+    - name: CA root cert on localhost
+      include_tasks: install-ca-root-cert.yml
+
+    - name: Check Result
+      include_tasks: check-web-server.yml

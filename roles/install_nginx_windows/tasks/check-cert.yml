@@ -1,0 +1,45 @@
+- name: Copy SSL key from Windows to Temp folder
+  fetch:
+    src: "{{ssl_dir}}\\server.crt"
+    dest: "{{temp_files}}/"
+    flat: yes
+
+- name: Get remote HTTPS certificate information
+  delegate_to: localhost
+  community.crypto.x509_certificate_info:
+    path: "{{temp_files}}/server.crt"
+  register: remote_cert_info
+
+- name: Read local certificate
+  delegate_to: localhost
+  community.crypto.x509_certificate_info:
+    path: "{{servers_keys_path}}/server.crt"
+  register: local_cert_info
+
+- name: Compare local and remote certificates
+  assert:
+    that:
+      - local_cert_info.subject == remote_cert_info.subject
+      - local_cert_info.issuer == remote_cert_info.issuer
+      - local_cert_info.serial_number == remote_cert_info.serial_number
+    msg: "The local and remote HTTPS certificates do not match."
+  register: cert_match
+  ignore_errors: yes
+
+- name: Check if certificates match failed
+  set_fact:
+    certs_mismatch: "{{ certs_match.msg is defined }}"
+
+- name: Set install_https based on certificate match
+  set_fact:
+    install_https: "{{ 'true' if certs_mismatch else 'false' }}"
+
+- name: Display Already Installed Message
+  debug:
+    msg: "HTTPS certificate already installed"
+  when: not install_https
+
+- name: Display Will Be Updated
+  debug:
+    msg: "HTTPS certificate will be updated"
+  when: install_https

@@ -1,0 +1,41 @@
+- name: Get Nginx version
+  win_shell: |
+    $nginx_home = "{{ nginx_home }}"
+    $nginx_exe = Join-Path -Path $nginx_home -ChildPath "nginx.exe"
+    if (Test-Path $nginx_exe) {
+      $version = (& $nginx_exe -v)
+      Write-Output $version
+    } else {
+      Write-Output "Nginx not found at $nginx_home"
+    }
+  register: nginx_version_output
+
+- name: Extract Nginx version from output
+  set_fact:
+    nginx_version_current: "{{ nginx_version_output.stderr | regex_replace('nginx version: nginx/(\\d+\\.\\d+\\.\\d+)', '\\1') }}"
+  when:
+    nginx_version_output.stderr is defined and nginx_version_output.stderr | regex_search('nginx version: nginx/(\\d+\\.\\d+\\.\\d+)')
+
+- name: Current and installing versions of Nginx are the same.
+  set_fact:
+    install_nginx: false
+  when:
+    nginx_version_current == nginx_version
+
+- name: Already Installed Message
+  debug:
+    msg: "Already installed Nginx version {{ nginx_version }}"
+  when:
+    nginx_version_current == nginx_version
+
+- name: Current and installing versions of Nginx are not the same.
+  set_fact:
+    install_nginx: true
+  when:
+    nginx_version_current != nginx_version
+
+- name: Will Be Updating Message
+  debug:
+    msg: "Current version:{{ nginx_version_current }}. Installing version: {{ nginx_version }}"
+  when:
+    nginx_version_current != nginx_version

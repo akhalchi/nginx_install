@@ -2,12 +2,16 @@
 
 This repository contains Ansible playbooks for setting up and configuring Nginx on a Windows host. Follow the steps below to prepare your environment and execute the playbooks.
 
-## Prerequisites
-
-1. Ensure you have Ansible installed on your control machine.
-2. Prepare your Windows host for Ansible by configuring WinRM.
-
 ## Preparation
+
+
+### Allow sudo on Linux localhost
+```sh
+sudo visudo
+```
+add string "your_username ALL=(ALL) NOPASSWD:ALL"
+
+and save
 
 ### Configure Windows Host for Ansible
 
@@ -19,28 +23,27 @@ Run the following PowerShell script on your Windows host to configure WinRM for 
 . .\ConfigureRemotingForAnsible.ps1
 ```
 
-## Install
+### Install Ansible on localhost
+Manual for [your OS](https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html).
 
-## Generate Root CA Keys
+It was tested for Ansible 2.15.12
 
-Generate the root CA keys by running the following playbook:
+### Download project
+In your home directory
 ```sh
-ansible-playbook playbooks/generate-ca-root-cert.yml
+git clone --depth=1  https://github.com/akhalchi/nginx_install.git
+```
+### Install collections
+```sh
+cd nginx_install/
+
+ansible-galaxy collection install -r requirements.yml --force
 ```
 
-## Encrypt Private Key
-Encrypt the private key for security purposes using Ansible Vault:
+## Run
 ```sh
-ansible-vault encrypt ca_nginx_cert.yml
+ansible-playbook playbooks/main.yml -i inventories/inventory.yml -e "server_name=test.ru days=365" --ask-vault-pass
 ```
+type "vaultpassword"
 
-# Generate Keys for Server
-Generate the necessary keys for your server by running the playbook and specifying the server name and the number of days the certificate should be valid:
-```sh
-ansible-playbook playbooks/generate-server-cert.yml -e "server_name=test.ru days=3365"
-```
-# Install Nginx
-Finally, install and configure Nginx on your Windows host using the following playbook:
-```sh
-ansible-playbook playbooks/install-nginx-windows.yml -i inventories/inventory.yml
-```
+

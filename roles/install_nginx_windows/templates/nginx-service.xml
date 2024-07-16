@@ -1,0 +1,15 @@
+<service>
+    <id>{{ nginx_service }}</id>
+    <name>{{ nginx_service }}</name>
+    <description>HTTP-Server nginx</description>
+    <executable>{{ nginx_home }}\nginx.exe</executable>
+    <logpath>{{ nginx_home }}\logs</logpath>
+    <logmode>roll</logmode>
+    <depend></depend>
+    <startargument>-p</startargument>
+    <startargument>{{ nginx_home }}</startargument>
+    <stopargument>-p</stopargument>
+    <stopargument>{{ nginx_home }}</stopargument>
+    <stopargument>-s</stopargument>
+    <stopargument>stop</stopargument>
+</service>

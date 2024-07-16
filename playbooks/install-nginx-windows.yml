@@ -1,6 +1,3 @@
-- name: Install Nginx on Windows
-  hosts: nginx_windows
-  tasks:
     - name: Run role
       include_role:
         name: install_nginx_windows

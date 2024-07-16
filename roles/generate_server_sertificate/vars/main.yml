@@ -6,9 +6,10 @@ root_keys_path: "{{ playbook_dir }}/../inventories/group_vars/all"
 key_size: 2048
 key_type: RSA
 
-country: 'US'
-organization: 'MyOrg'
-state: 'MyState'
-email: 'admin@myorg.com'
+country: 'EU'
+organization: 'EuOrg'
+state: 'EuState'
+email: 'admin@euorg.com'
+
 
 

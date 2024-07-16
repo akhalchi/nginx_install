@@ -1,0 +1,15 @@
+- name: Copy root CA certificate to system trust store
+  delegate_to: localhost
+  copy:
+    src: "{{ playbook_dir }}/../inventories/group_vars/all/rootCA.pem"
+    dest: /usr/local/share/ca-certificates/rootCA.crt
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+- name: Update certificate trust store
+  delegate_to: localhost
+  command: update-ca-certificates
+  register: update_ca_result
+  become: yes

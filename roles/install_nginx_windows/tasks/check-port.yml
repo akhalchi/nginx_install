@@ -1,0 +1,24 @@
+- name: Check if port {{ port }} is listening
+  win_shell: |
+    $port = {{ port }}
+    $connection = Get-NetTCPConnection -LocalPort $port
+    if ($connection) {
+      $processId = $connection.OwningProcess
+      $process = Get-Process -Id $processId
+      $processName = $process.ProcessName
+      $nginxPath = ""
+      if ($processName -eq "nginx") {
+        $nginxPath = (Get-WmiObject Win32_Process -Filter "ProcessId = $processId").ExecutablePath
+      }
+      Write-Output "LISTENED|$processName|$nginxPath"
+    } else {
+      Write-Output "NOT LISTENED|||"
+    }
+  register: port_check
+  ignore_errors: yes
+
+- name: Set port status variables for port {{ port }}
+  set_fact:
+    "{{ port_result }}_port_status": "{{ (port_check.stdout | split('|'))[0] }}"
+    "{{ port_result }}_port_process": "{{ (port_check.stdout | split('|'))[1] }}"
+    "{{ port_result }}_port_folder": "{{ (port_check.stdout | split('|'))[2] | regex_replace('\\\\nginx.exe', '') }}"

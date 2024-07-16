@@ -1,9 +1,27 @@
 ---
+- name: Check ports
+  include_tasks: check-http-https-ports.yml
+
+- name: Check Certificate on server
+  include_tasks: check-cert.yml
+  when: check_cert
+
+- name: Check Nginx version
+  include_tasks: check-nginx.yml
+  when: check_nginx
+
 - name: Download software
   include_tasks: download-software.yml
+  when: install_nginx
 
 - name: Setup Nginx on Windows host
   include_tasks: setup-nginx.yml
+  when: install_nginx
 
 - name: Install HTTPS on host
   include_tasks: install-https.yml
+  when: install_https
+
+- name: Allow connection to HTTPS port
+  include_tasks: setup-firewall.yml
+  when: install_https

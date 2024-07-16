@@ -8,10 +8,43 @@
     src: "{{temp_files}}/nginx-{{nginx_version}}.zip"
     dest: "{{nginx_temp}}\\nginx-{{nginx_version}}.zip"
 
-- name: Unzip Nginx on remote host and rename files
+- name: Unzip Nginx on remote host
   win_unzip:
     src: "{{ nginx_temp }}\\nginx-{{ nginx_version }}.zip"
     dest: "{{ nginx_temp }}\\"
+
+- name: Stop the Nginx service
+  win_service:
+    name: "{{ nginx_service }}"
+    start_mode: disabled
+    state: stopped
+  ignore_errors: yes
+
+- name: Delete the Nginx service
+  win_shell: "sc.exe delete {{ nginx_service }}"
+  args:
+    executable: cmd
+  ignore_errors: yes
+
+- name: Check if Nginx directory already exists
+  win_stat:
+    path: "{{ nginx_home }}"
+  register: nginx_dir
+
+- name: Backup old Nginx Home
+  win_copy:
+    src: "{{ nginx_home }}"
+    dest: "{{ nginx_home }}_backup_{{ ansible_date_time.iso8601_basic_short }}"
+    recurse: yes
+    remote_src: yes
+  when: nginx_dir.stat.exists
+
+
+- name: Delete old Nginx Home After Backup
+  win_file:
+    path: "{{ nginx_home }}"
+    state: absent
+  when: nginx_dir.stat.exists
 
 - name: Copy Nginx files to installation directory
   win_copy:
@@ -20,7 +53,7 @@
     recurse: yes
     remote_src: yes
 
-- name: Copy Nginx files to installation directory
+- name: Delete Temp Directory
   win_file:
     path: "{{ nginx_temp }}"
     state: absent
@@ -31,7 +64,7 @@
     dest: "{{nginx_home}}\\nginx-service.exe"
 
 - name: Copy nginx-service.xml to remote host
-  win_copy:
+  win_template:
     src: nginx-service.xml
     dest: "{{nginx_home}}\\nginx-service.xml"
 
@@ -40,8 +73,6 @@
   args:
     chdir: "{{nginx_home}}"
 
-- name: Start Nginx service
-  win_service:
-    name: "{{nginx_service}}"
-    start_mode: auto
-    state: started
+- name: Install HTTPS after Nginx setup
+  set_fact:
+    install_https: true

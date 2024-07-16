@@ -5,7 +5,7 @@ root_keys_path: "{{ playbook_dir }}/../inventories/group_vars/all"
 key_size: 2048
 key_type: RSA
 
-days: 1024
+days: 365
 
 
 country: 'US'

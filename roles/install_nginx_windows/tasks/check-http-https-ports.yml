@@ -1,0 +1,63 @@
+    - name: Check if HTTP (port 80) is listening
+      include_tasks: check-port.yml
+      vars:
+        port: 80
+        port_result: "http"
+
+    - name: Check if HTTPS (port 443) is listening
+      include_tasks: check-port.yml
+      vars:
+        port: 443
+        port_result: "https"
+
+    - name: Default HTTP port status variables if not set
+      set_fact:
+        http_port_status: "NOT LISTENED"
+        http_port_process: null
+        http_port_folder: null
+      when: http_port_status is not defined
+
+    - name: Default HTTPS port status variables if not set
+      set_fact:
+        https_port_status: "NOT LISTENED"
+        https_port_process: null
+        https_port_folder: null
+      when: https_port_status is not defined
+
+    - name: Fail if HTTP port is occupied by a non-nginx process
+      fail:
+        msg: "HTTP Port 80 is occupied by process {{ http_port_process }}, which is not nginx."
+      when:
+        - http_port_status == "LISTENED"
+        - http_port_process != "{{ nginx_service }}"
+
+    - name: Fail if HTTPS port is occupied by a non-nginx process
+      fail:
+        msg: "HTTPS Port 443 is occupied by process {{ https_port_process }}, which is not nginx."
+      when:
+        - https_port_status == "LISTENED"
+        - https_port_process != "{{ nginx_service }}"
+
+    - name: HTTPS up
+      set_fact:
+        check_cert: true
+        check_nginx: true
+      when: https_port_status == "LISTENED"
+
+    - name: HTTPS down HTTP up
+      set_fact:
+        check_cert: false
+        check_nginx: true
+      when:
+        - http_port_status == "LISTENED"
+        - https_port_status == "NOT LISTENED"
+
+    - name: HTTPS and HTTP are down
+      set_fact:
+        check_cert: false
+        check_nginx: false
+        install_nginx: true
+        install_https: true
+      when:
+        - http_port_status == "NOT LISTENED"
+        - https_port_status == "NOT LISTENED"

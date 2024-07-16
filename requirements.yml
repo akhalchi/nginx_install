@@ -2,3 +2,6 @@
 collections:
   - name: community.crypto
     version: 2.20.0
+
+  - name: ansible.windows
+    version: 1.14.0

@@ -8,18 +8,28 @@
       win_copy:
         src: "{{servers_keys_path}}/server.crt"
         dest: "{{ssl_dir}}\\server.crt"
+        backup: yes
 
     - name: Copy SSL private key to remote host
       win_copy:
         src: "{{servers_keys_path}}/server.key"
         dest: "{{ssl_dir}}\\server.key"
+        backup: yes
+
+    - name: Backup nginx.conf
+      win_copy:
+        src: "{{nginx_home}}\\conf\\nginx.conf"
+        dest: "{{nginx_home}}\\conf\\nginx.conf.bk"
+        backup: yes
+        remote_src: yes
 
     - name: Copy nginx configuration file with HTTPS setup
       win_template:
         src: nginx.conf
         dest: "{{nginx_home}}\\conf\\nginx.conf"
+        backup: yes
 
-    - name: Restart Nginx service
+    - name: Restart Nginx service to apply changes
       win_service:
-        name: "{{nginx_service}}"
+        name: "{{ nginx_service }}"
         state: restarted
