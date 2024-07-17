@@ -2,7 +2,6 @@
 # tasks file for generate_ca_root_sert
 
 - name: Generate RSA private key
-  delegate_to: localhost
   community.crypto.openssl_privatekey:
     path: "{{root_keys_path}}/rootCA.key"
     size: "{{key_size}}"
@@ -11,7 +10,6 @@
   register: new_private_key
 
 - name: Create a root certificate request
-  delegate_to: localhost
   community.crypto.openssl_csr:
     path: "{{root_keys_path}}/rootCA.csr"
     privatekey_path: "{{root_keys_path}}/rootCA.key"
@@ -22,7 +20,6 @@
     email_address: '{{email}}'
 
 - name: Generate self-signed root certificate
-  delegate_to: localhost
   community.crypto.x509_certificate:
     path: "{{root_keys_path}}/rootCA.pem"
     privatekey_path: "{{root_keys_path}}/rootCA.key"

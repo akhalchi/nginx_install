@@ -1,20 +1,17 @@
 # tasks/main.yml
 
 - name: Create server keys directory
-  delegate_to: localhost
   ansible.builtin.file:
     path: "{{servers_keys_path}}"
     state: directory
 
 - name: Generate RSA private key for Server
-  delegate_to: localhost
   community.crypto.openssl_privatekey:
     path: "{{servers_keys_path}}/server.key"
     size: "{{ key_size }}"
     type: "{{ key_type }}"
 
 - name: Create a server certificate request
-  delegate_to: localhost
   community.crypto.openssl_csr:
     path: "{{servers_keys_path}}/server.csr"
     privatekey_path: "{{servers_keys_path}}/server.key"
@@ -25,7 +22,6 @@
     email_address: "{{email}}"
 
 - name: Sign the server certificate with Root CA
-  delegate_to: localhost
   community.crypto.x509_certificate:
     path: "{{ servers_keys_path }}/server.crt"
     privatekey_content: "{{root_keys_path}}/rootCA.key"

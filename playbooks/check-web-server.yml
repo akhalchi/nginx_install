@@ -1,5 +1,4 @@
     - name: Send HTTP request to nginx
-      delegate_to: localhost
       uri:
         url: "https://{{ server_name }}/"
         method: GET
@@ -8,7 +7,6 @@
       register: nginx_response
 
     - name: Check if nginx welcome message is present
-      delegate_to: localhost
       assert:
         that:
           - "'Welcome to nginx!' in nginx_response.content"
