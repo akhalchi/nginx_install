@@ -28,11 +28,11 @@
 
 - name: Check if certificates match failed
   set_fact:
-    certs_mismatch: "{{ certs_match.msg is defined }}"
+    certs_mismatch: "{{ cert_match.msg is defined }}"
 
 - name: Set install_https based on certificate match
   set_fact:
-    install_https: "{{ 'true' if certs_mismatch else 'false' }}"
+    install_https: "{{ certs_mismatch }}"
 
 - name: Display Already Installed Message
   debug:
